@@ -99,6 +99,9 @@ $largeNews = $randomNews[0];
 // 5 tin nhỏ là phần tử từ index 1 đến 5 (tức id 2 đến 6 trong mảng)
 $smallNews = array_slice($randomNews, 1, 5);
 
+setlocale(LC_TIME, 'vi_VN.UTF-8');
+date_default_timezone_set('Asia/Ho_Chi_Minh');
+
 ?>
 
 
@@ -114,7 +117,7 @@ $smallNews = array_slice($randomNews, 1, 5);
 <body>
   <header class="header">
     <div class="top-bar">
-      <span>Tuesday, October 29, 2024</span>
+      <span><?php echo strftime('%A, %d %B, %Y'); ?></span>
       <span class="menu-right">The Menu ▸</span>
     </div>
     <h1 class="logo">The <span class="highlight">NEWS*</span></h1>
