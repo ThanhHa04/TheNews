@@ -1,0 +1,30 @@
+services:
+  node1:
+    build: ./node1
+    container_name: node1
+    environment:
+      - NODE_NAME=node1
+    ports:
+      - "8001:80"
+    volumes:
+      - ./node1/app:/var/www/html/app
+
+  node2:
+    build: ./node2
+    container_name: node2
+    environment:
+      - NODE_NAME=node2
+    ports:
+      - "8002:80"
+    volumes:
+      - ./node2/app:/var/www/html/app
+
+  node3:
+    build: ./node3
+    container_name: node3
+    environment:
+      - NODE_NAME=node3
+    ports:
+      - "8003:80"
+    volumes:
+      - ./node3/app:/var/www/html/app

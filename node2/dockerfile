@@ -1,0 +1,11 @@
+# Dockerfile
+FROM php:8.2-apache
+
+# Copy code vào container
+COPY app/ /var/www/html/
+
+# Set quyền cho thư mục lưu data (Lazer DB)
+RUN chown -R www-data:www-data /var/www/html/data
+
+# Mở port 80
+EXPOSE 80
