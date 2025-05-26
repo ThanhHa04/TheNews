@@ -38,7 +38,7 @@ body {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 1.5rem;
     padding: 1rem 0;
     border-top: 2px solid #000;
     border-bottom: 2px solid #000;
@@ -53,19 +53,18 @@ body {
     position: relative;
     margin: 1rem auto;
     width: 80%;
-    max-height: 600px;
+    height: 600px;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #f2f2f2;
-    border-radius: 10px;
 }
 
 .featured img {
-    max-height: 100%;
-    max-width: 100%;
-    object-fit: contain;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
     display: block;
 }
 
@@ -76,7 +75,6 @@ body {
     background: rgba(255, 255, 255, 0.9);
     padding: 1rem;
     max-width: 600px;
-    border-radius: 8px;
 }
 
 .tag {
@@ -160,15 +158,17 @@ body {
 }
 
 .small-news-thumb img {
-    width: 100%; 
+    width: 100%;
     object-fit: cover;
 }
 
 .section-news {
-    padding: 2rem 2rem 2rem 1rem;
+    padding: 0rem 2rem 2rem 0rem;
+    width: 80%;
+    margin: auto;
 }
 
-.section-news h2 {
+.section-news h1 {
     border-bottom: 2px solid #000;
     padding-bottom: 0.5rem;
     margin-bottom: 1rem;
@@ -181,12 +181,23 @@ body {
 }
 
 .news-grid article {
-    background: white;
-    padding: 1rem;
-    border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; 
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: 16px;
+  box-sizing: border-box;
+  position: relative;
+  height: 400px;
 }
 
+.news-grid article p {
+  margin-top: auto;
+  margin-bottom: 5px;
+  color: #666;
+  font-size: 0.9em;
+}
 .news-grid img {
     width: 100%;
     height: 50%;
@@ -198,4 +209,184 @@ footer {
     color: white;
     text-align: center;
     padding: 1rem;
+}
+
+.three-columns-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.news-column h2 {
+    border-bottom: 2px solid #000;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.news-column article {
+    display: flex;
+    padding: 12px 0;
+    box-sizing: border-box;
+    height: auto;
+    align-items: flex-start;
+    gap: 1rem;
+    width:95%;
+}
+
+.news-image {
+    flex: 0 0 120px;
+    max-height: 90px;
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+.news-image img {
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+    display: block;
+}
+
+.news-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-content h3 {
+    margin: 0 0 0.3rem 0;
+    font-size: 1rem;
+}
+
+.news-content .meta {
+    margin: 0;
+    color: #666;
+    font-size: 0.6rem;
+}
+
+.section-random-tags {
+  display: flex;
+  gap: 2rem;
+  width: 80%;
+  height: 550px;
+  margin: 2rem auto;
+  box-sizing: border-box;
+}
+
+.random-news {
+  flex: 7;
+}
+
+.random-news h2 {
+  border-bottom: 2px solid #000;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.random-news-grid {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.large-news {
+  flex: 4;
+  height: 400px;
+}
+
+.large-news img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 0.75rem;
+}
+
+.large-news h3 {
+  margin: 0.25rem 0;
+  padding: 10px;
+}
+
+.large-news .summary {
+  color: #444;
+  padding: 10px;
+  margin-bottom: 0.5rem;
+}
+
+.large-news .meta {
+  font-size: 0.85rem;
+  color: #777;
+  padding: 10px;
+}
+
+.small-news-list {
+  flex: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.small-news {
+  display: flex;
+  gap: 0.75rem;
+  box-sizing: border-box;
+}
+
+.small-news img {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.small-news-content h4 {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.2;
+}
+
+.small-news-content .meta {
+  font-size: 0.75rem;
+  color: #777;
+  margin-top: 0.25rem;
+}
+
+.tag-sidebar {
+    width: 30%;
+    padding: 20px;
+    background: rgb(240, 239, 239);
+}
+
+.tag-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tag-list li {
+    margin-bottom: 10px;
+}
+
+.tag-list a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    padding: 8px 12px;
+    background: #f9f9f9;
+    border-radius: 5px;
+    color: #333;
+    position: relative;
+}
+
+.tag-list a:hover {
+    background: #eee;
+    font-weight: 500;
+}
+
+.tag-list a::after {
+    content: attr(data-count);
+    background-color: #ddd;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin-left: 10px;
+    color: #555;
 }

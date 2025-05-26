@@ -1,4 +1,5 @@
 <?php
+//node 1 Chính trị và Thể thao
 header('Content-Type: application/json');
 
 $action = $_GET['action'] ?? '';
