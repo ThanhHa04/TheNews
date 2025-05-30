@@ -1,33 +1,19 @@
 <?php
-$nodes = [
-    'node1' => 'http://localhost:8001/app/api/api.php?action=getOriginal',
-    'node2' => 'http://localhost:8002/app/api/api.php?action=getOriginal',
-    'node3' => 'http://localhost:8003/app/api/api.php?action=getOriginal',
-];
-
-$backups = [
-    'node1' => 'http://localhost:8002/app/api/api.php?action=getBackup',
-    'node2' => 'http://localhost:8003/app/api/api.php?action=getBackup',
-    'node3' => 'http://localhost:8001/app/api/api.php?action=getBackup',
-];
+$coordinatorUrl = 'http://localhost:8004/coordinator.php?action=getFullData';
 
 $allNews = [];
 
-// Lấy dữ liệu từ các node và backup
-foreach ($nodes as $nodeName => $url) {
-    $response = @file_get_contents($url);
+$response = @file_get_contents($coordinatorUrl);
 
-    // Nếu lỗi, thử backup
-    if ($response === false && isset($backups[$nodeName])) {
-        $response = @file_get_contents($backups[$nodeName]);
-    }
-
-    if ($response !== false) {
-        $data = json_decode($response, true);
-        if (is_array($data)) {
-            foreach ($data as $item) {
-                if (is_array($item) && isset($item['time_up'])) {
-                    $allNews[] = $item;
+if ($response !== false) {
+    $result = json_decode($response, true);
+    if (isset($result['fullData']) && is_array($result['fullData'])) {
+        foreach ($result['fullData'] as $nodeName => $nodeData) {
+            if (is_array($nodeData)) {
+                foreach ($nodeData as $item) {
+                    if (is_array($item) && isset($item['time_up'])) {
+                        $allNews[] = $item;
+                    }
                 }
             }
         }

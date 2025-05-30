@@ -28,3 +28,11 @@ services:
       - "8003:80"
     volumes:
       - ./node3/app:/var/www/html/app
+
+  coordinator:
+    build: ./coordinator
+    container_name: coordinator
+    ports:
+      - "8004:80"
+    volumes:
+      - ./coordinator:/var/www/html

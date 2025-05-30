@@ -1,0 +1,8 @@
+# Dockerfile
+FROM php:8.2-apache
+
+# Copy code vào container
+COPY . /var/www/html/
+
+# Mở port 80
+EXPOSE 80
