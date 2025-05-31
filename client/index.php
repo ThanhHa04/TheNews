@@ -1,5 +1,5 @@
 <?php
-$coordinatorUrl = 'http://localhost:8004/coordinator.php?action=getFullData';
+$coordinatorUrl = 'http://localhost:8004/api.php?action=getFullData';
 
 $allNews = [];
 
@@ -20,10 +20,16 @@ if ($response !== false) {
     }
 }
 
-// Hàm sắp xếp giảm dần theo thời gian
 function sortByTimeDesc(&$arr) {
     usort($arr, fn($a, $b) => strtotime($b['time_up']) - strtotime($a['time_up']));
 }
+sortByTimeDesc($allNews);
+
+// Gán id = index cho mỗi phần tử trong $allNews, dùng để làm key duy nhất
+foreach ($allNews as $key => &$item) {
+    $item['id'] = $key;
+}
+unset($item);
 
 // Hàm format tag
 function formatTag($tag) {
@@ -35,7 +41,7 @@ function formatTag($tag) {
             return 'Sức khỏe' ;
         case 'giao duc':
             return 'Giáo dục';
-        case 'VH - GT':
+        case 'vh - gt':
             return 'Văn hóa - Giải trí';
         case 'du lich':
             return 'Du lịch';
@@ -46,7 +52,7 @@ function formatTag($tag) {
     }
 }
 
-// Lọc theo tag
+// Lọc theo tag (chú ý chuyển về lowercase để so sánh)
 $newsChinhTri = array_filter($allNews, fn($n) => strtolower($n['tags']) === 'chinh tri');
 $newsSucKhoe = array_filter($allNews, fn($n) => strtolower($n['tags']) === 'suc khoe');
 $newsKinhDoanh = array_filter($allNews, fn($n) => strtolower($n['tags']) === 'kinh doanh');
@@ -54,7 +60,7 @@ $newsVHGiaiTri = array_filter($allNews, fn($n) => strtolower($n['tags']) === 'vh
 $newsDuLich = array_filter($allNews, fn($n) => strtolower($n['tags']) === 'du lich');
 $newsTheThao = array_filter($allNews, fn($n) => strtolower($n['tags']) === 'the thao');
 
-// reset lại id của mảng đã lọc 
+// reset lại chỉ số mảng đã lọc
 $newsChinhTri = array_values($newsChinhTri);
 $newsSucKhoe = array_values($newsSucKhoe);
 $newsKinhDoanh = array_values($newsKinhDoanh);
@@ -62,16 +68,7 @@ $newsVHGiaiTri = array_values($newsVHGiaiTri);
 $newsDuLich = array_values($newsDuLich);
 $newsTheThao = array_values($newsTheThao);
 
-// Sắp xếp từng mảng
-sortByTimeDesc($newsChinhTri);
-sortByTimeDesc($newsSucKhoe);
-sortByTimeDesc($newsKinhDoanh);
-sortByTimeDesc($newsVHGiaiTri);
-sortByTimeDesc($newsDuLich);
-sortByTimeDesc($newsTheThao);
-sortByTimeDesc($allNews);
-
-// Lấy 3 tin mới nhất
+// Lấy 15 tin mới nhất (đã sắp xếp trước)
 $latestNews = array_slice($allNews, 0, 15);
 
 // Lấy 7 tin random
@@ -79,17 +76,15 @@ $shuffledNews = $allNews;
 shuffle($shuffledNews);
 $randomNews = array_slice($shuffledNews, 0, 7);
 
-// Tin lớn là phần tử đầu tiên
+// Tin lớn là phần tử đầu tiên trong $randomNews
 $largeNews = $randomNews[0];
 
-// 5 tin nhỏ là phần tử từ index 1 đến 5 (tức id 2 đến 6 trong mảng)
+// 5 tin nhỏ là phần tử từ index 1 đến 5
 $smallNews = array_slice($randomNews, 1, 5);
 
 setlocale(LC_TIME, 'vi_VN.UTF-8');
 date_default_timezone_set('Asia/Ho_Chi_Minh');
-
 ?>
-
 
 
 <!DOCTYPE html>
@@ -103,25 +98,68 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
 <body>
   <header class="header">
     <div class="top-bar">
-      <span><?php echo strftime('%A, %d %B, %Y'); ?></span>
-      <span class="menu-right">The Menu ▸</span>
+        <span><?php echo strftime('%A, %d %B, %Y'); ?></span>
+        <span class="menu-right">
+            <span class="login" onclick="showLoginForm()">Đăng nhập</span>
+            <span class="register" onclick="showRegisterForm()">Đăng ký</span>
+        </span>
     </div>
-    <h1 class="logo">The <span class="highlight">NEWS*</span></h1>
-    <nav class="nav-bar">
-      <a href="#"></a><a href="#">Mới nhất</a><a href="#">Kinh doanh</a>
-      <a href="#">Chính trị</a><a href="#">Sức khỏe</a><a href="#">Thể thao</a>
-      <a href="#">Văn hóa - Giải trí</a><a href="#">Du lịch</a>
-    </nav>
-  </header>
 
+    <div id="login-box" class="login-overlay" style="display: none;">
+    <div class="login-form">
+        <span class="close-btn" onclick="hideForms()">×</span>
+        <form method="post" action="login.php">
+        <h2>Đăng nhập</h2>
+        <input type="text" name="username" placeholder="Tên đăng nhập" required>
+        <input type="password" name="password" placeholder="Mật khẩu" required>
+        <button type="submit">Đăng nhập</button>
+        </form>
+    </div>
+    </div>
+
+    <div id="register-box" class="login-overlay" style="display: none;">
+    <div class="login-form">
+        <span class="close-btn" onclick="hideForms()">×</span>
+        <form method="post" action="register.php">
+        <h2>Đăng ký</h2>
+        <input type="text" name="email" placeholder="Email" required>
+        <input type="text" name="username" placeholder="Tên đăng nhập" required>
+        <input type="password" name="password" placeholder="Mật khẩu" required>
+        <button type="submit">Đăng ký</button>
+        </form>
+    </div>
+    </div>
+
+
+    <h1 class="logo">The <span class="highlight">NEWS*</span></h1>
+        <nav class="nav-bar">
+            <a href="index.php">Trang chủ</a>
+            <a href="tags.php?tag=getKinhDoanh">Kinh doanh</a>
+            <a href="tags.php?tag=getChinhTri">Chính trị</a>
+            <a href="tags.php?tag=getSucKhoe">Sức khỏe</a>
+            <a href="tags.php?tag=getTheThao">Thể thao</a>
+            <a href="tags.php?tag=getVHGT">Văn hóa - Giải trí</a>
+            <a href="tags.php?tag=getDuLich">Du lịch</a>
+        </nav>
+    </header>
   <main>
     <section class="featured">
         <?php if (!empty($randomNews[0]['image'])): ?>
-            <img src="<?= htmlspecialchars($randomNews[0]['image']) ?>" alt="Main News" />
+            <a href="detail.php?id=<?= urlencode($randomNews[0]['id']) ?>">
+                <img src="<?= htmlspecialchars($randomNews[0]['image']) ?>" alt="Main News" />
+            </a>
         <?php endif; ?>
         <div class="featured-content">
-            <h1><?= htmlspecialchars($randomNews[0]['title']) ?></h1>
-            <p><span class="tag"><?= formatTag($randomNews[0]['tags']) ?></span> • <?= htmlspecialchars($randomNews[0]['author'] ?? 'Không rõ') ?> • <?= date('M d, Y', strtotime($randomNews[0]['time_up'])) ?></p>
+            <h1>
+                <a href="detail.php?id=<?= urlencode($randomNews[0]['id']) ?>">
+                    <?= htmlspecialchars($randomNews[0]['title']) ?>
+                </a>
+            </h1>
+            <p>
+                <span class="tag"><?= formatTag($randomNews[0]['tags']) ?></span> • 
+                <?= htmlspecialchars($randomNews[0]['author'] ?? 'Không rõ') ?> • 
+                <?= date('M d, Y', strtotime($randomNews[0]['time_up'])) ?>
+            </p>
         </div>
     </section>
 
@@ -136,18 +174,27 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
                             <img src="<?= htmlspecialchars($latestNews[10]['image']) ?>" alt="">
                         <?php endif; ?>
                         <div class="news-content">
-                            <h3><?= htmlspecialchars($latestNews[10]['title']) ?></h3>
-                            <p><?= formatTag($latestNews[10]['tags']) ?> — <?= date('M d, Y', strtotime($latestNews[0]['time_up'])) ?></p>
+                            <h3>
+                                <a href="detail.php?id=<?= $latestNews[10]['id'] ?>">
+                                    <?= htmlspecialchars($latestNews[10]['title']) ?>
+                                </a>
+                            </h3>
+                            <p><?= formatTag($latestNews[10]['tags']) ?> — <?= date('M d, Y', strtotime($latestNews[10]['time_up'])) ?></p>
                         </div>
                     </article>
                 <?php endif; ?>
             </div>
+
             <div class="latest-news-right">
                 <?php for ($i = 2; $i <= 3; $i++): ?>
                     <?php if (!empty($latestNews[$i])): ?>
                         <article class="news-item-small">
                             <div class="small-news-content">
-                                <h4><?= htmlspecialchars($latestNews[$i]['title']) ?></h4>
+                                <h4>
+                                    <a href="detail.php?id=<?= $latestNews[$i]['id'] ?>">
+                                        <?= htmlspecialchars($latestNews[$i]['title']) ?>
+                                    </a>
+                                </h4>
                                 <p><?= formatTag($latestNews[$i]['tags']) ?> — <?= date('M d, Y', strtotime($latestNews[$i]['time_up'])) ?></p>
                             </div>
                             <?php if (!empty($latestNews[$i]['image'])): ?>
@@ -168,15 +215,17 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
         <div class="news-grid">
             <?php foreach (array_slice($newsSucKhoe, 0, 4) as $news) : ?>
             <article>
-                <img src="<?= htmlspecialchars($news['image'] ?? 'default-image.jpg') ?>" alt="<?= htmlspecialchars($news['title']) ?>">
-                <h3><?= htmlspecialchars($news['title']) ?></h3>
-                <p><?= formatTag($news['tags']) ?> — <?= date('M d, Y', strtotime($news['time_up'])) ?></p>
+                <a href="detail.php?id=<?= urlencode($news['id']) ?>" style="text-decoration: none; color: black;">
+                    <img src="<?= htmlspecialchars($news['image'] ?? 'default-image.jpg') ?>" alt="<?= htmlspecialchars($news['title']) ?>">
+                    <h3><?= htmlspecialchars($news['title']) ?></h3>
+                    <p><?= formatTag($news['tags']) ?> — <?= date('M d, Y', strtotime($news['time_up'])) ?></p>
+                </a>
             </article>
             <?php endforeach; ?>
         </div>
     </section>
 
-        <section class="section-news">
+    <section class="section-news">
         <div class="three-columns-grid">
             <!-- Cột Chính trị -->
             <div class="news-column">
@@ -187,7 +236,11 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
                         <img src="<?= htmlspecialchars($news['image'] ?? 'default-image.jpg') ?>" alt="<?= htmlspecialchars($news['title']) ?>">
                     </div>
                     <div class="news-content">
-                        <h3><?= htmlspecialchars($news['title']) ?></h3>
+                        <h3>
+                            <a href="detail.php?id=<?= urlencode($news['id']) ?>" style="color: black; text-decoration: none;">
+                                <?= htmlspecialchars($news['title']) ?>
+                            </a>
+                        </h3>
                         <p class="meta"><?= formatTag($news['tags']) ?> — <?= date('M d, Y', strtotime($news['time_up'])) ?></p>
                     </div>
                 </article>
@@ -203,7 +256,11 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
                         <img src="<?= htmlspecialchars($news['image'] ?? 'default-image.jpg') ?>" alt="<?= htmlspecialchars($news['title']) ?>">
                     </div>
                     <div class="news-content">
-                        <h3><?= htmlspecialchars($news['title']) ?></h3>
+                        <h3>
+                            <a href="detail.php?id=<?= urlencode($news['id']) ?>" style="color: black; text-decoration: none;">
+                                <?= htmlspecialchars($news['title']) ?>
+                            </a>
+                        </h3>
                         <p class="meta"><?= formatTag($news['tags']) ?> — <?= date('M d, Y', strtotime($news['time_up'])) ?></p>
                     </div>
                 </article>
@@ -219,7 +276,11 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
                         <img src="<?= htmlspecialchars($news['image'] ?? 'default-image.jpg') ?>" alt="<?= htmlspecialchars($news['title']) ?>">
                     </div>
                     <div class="news-content">
-                        <h3><?= htmlspecialchars($news['title']) ?></h3>
+                        <h3>
+                            <a href="detail.php?id=<?= urlencode($news['id']) ?>" style="color: black; text-decoration: none;">
+                                <?= htmlspecialchars($news['title']) ?>
+                            </a>
+                        </h3>
                         <p class="meta"><?= formatTag($news['tags']) ?> — <?= date('M d, Y', strtotime($news['time_up'])) ?></p>
                     </div>
                 </article>
@@ -235,7 +296,11 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
             <?php foreach (array_slice($newsDuLich, 0, 4) as $news) : ?>
             <article>
                 <img src="<?= htmlspecialchars($news['image'] ?? 'default-image.jpg') ?>" alt="<?= htmlspecialchars($news['title']) ?>">
-                <h3><?= htmlspecialchars($news['title']) ?></h3>
+                <h3>
+                    <a href="detail.php?id=<?= urlencode($news['id']) ?>" style="color: black; text-decoration: none;">
+                        <?= htmlspecialchars($news['title']) ?>
+                    </a>
+                </h3>
                 <p><?= formatTag($news['tags']) ?> — <?= date('M d, Y', strtotime($news['time_up'])) ?></p>
             </article>
             <?php endforeach; ?>
@@ -248,7 +313,11 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
             <div class="random-news-grid">
                 <article class="large-news">
                     <img src="<?= htmlspecialchars($randomNews[1]['image'] ?? 'default-image.jpg') ?>" alt="<?= htmlspecialchars($randomNews[1]['title']) ?>">
-                    <h3><?= htmlspecialchars($randomNews[1]['title']) ?></h3>
+                    <h3>
+                        <a href="detail.php?id=<?= urlencode($randomNews[1]['id']) ?>" style="color: black; text-decoration: none;">
+                            <?= htmlspecialchars($randomNews[1]['title']) ?>
+                        </a>
+                    </h3>
                     <p class="summary"><?= htmlspecialchars($randomNews[1]['summary'] ?? substr($randomNews[1]['content'] ?? '', 0, 150) . '...') ?></p>
                     <p class="meta"><?= formatTag($randomNews[1]['tags']) ?> — <?= date('M d, Y', strtotime($randomNews[1]['time_up'])) ?></p>
                 </article>
@@ -258,7 +327,11 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
                     <article class="small-news">
                         <img src="<?= htmlspecialchars($news['image'] ?? 'default-image.jpg') ?>" alt="<?= htmlspecialchars($news['title']) ?>">
                         <div class="small-news-content">
-                            <h4><?= htmlspecialchars($news['title']) ?></h4>
+                            <h4>
+                                <a href="detail.php?id=<?= urlencode($news['id']) ?>" style="color: black; text-decoration: none;">
+                                    <?= htmlspecialchars($news['title']) ?>
+                                </a>
+                            </h4>
                             <p class="meta"><?= formatTag($news['tags']) ?> — <?= date('M d, Y', strtotime($news['time_up'])) ?></p>
                         </div>
                     </article>
@@ -270,13 +343,13 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
         <aside class="tag-sidebar">
             <h2>Thể loại</h2>
             <ul class="tag-list">
-                <li><a href="#" data-count="<?= count($allNews) ?>">Tất cả</a></li>
-                <li><a href="#" data-count="<?= count($newsChinhTri) ?>">Chính trị</a></li>
-                <li><a href="#" data-count="<?= count($newsKinhDoanh) ?>">Kinh doanh</a></li>
-                <li><a href="#" data-count="<?= count($newsSucKhoe) ?>">Sức khỏe</a></li>
-                <li><a href="#" data-count="<?= count($newsTheThao) ?>">Thể thao</a></li>
-                <li><a href="#" data-count="<?= count($newsVHGiaiTri) ?>">Văn hóa - Giải trí</a></li>
-                <li><a href="#" data-count="<?= count($newsDuLich) ?>">Du lịch</a></li>
+                <li><a href="index.php" data-count="<?= count($allNews) ?>">Tất cả</a></li>
+                <li><a href="tags.php?tag=getChinhTri" data-count="<?= count($newsChinhTri) ?>">Chính trị</a></li>
+                <li><a href="tags.php?tag=getKinhDoanh" data-count="<?= count($newsKinhDoanh) ?>">Kinh doanh</a></li>
+                <li><a href="tags.php?tag=getSucKhoe" data-count="<?= count($newsSucKhoe) ?>">Sức khỏe</a></li>
+                <li><a href="tags.php?tag=getTheThao" data-count="<?= count($newsTheThao) ?>">Thể thao</a></li>
+                <li><a href="tags.php?tag=getVHGT" data-count="<?= count($newsVHGiaiTri) ?>">Văn hóa - Giải trí</a></li>
+                <li><a href="tags.php?tag=getDuLich" data-count="<?= count($newsDuLich) ?>">Du lịch</a></li>
             </ul>
         </aside>
     </section>
@@ -285,4 +358,22 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
     <p>© 2024 The News. All rights reserved.</p>
   </footer>
 </body>
+<script>
+function showLoginForm() {
+  document.getElementById("login-box").style.display = "flex";
+  document.getElementById("register-box").style.display = "none";
+}
+
+function showRegisterForm() {
+  document.getElementById("register-box").style.display = "flex";
+  document.getElementById("login-box").style.display = "none";
+}
+
+function hideForms() {
+  document.getElementById("login-box").style.display = "none";
+  document.getElementById("register-box").style.display = "none";
+}
+</script>
+
+
 </html>

@@ -1,0 +1,136 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    max-width: 1000px;
+    margin: 40px auto;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.8;
+    color: #2c3e50;
+    background-color: #fefefe;
+    padding: 0 20px 50px 20px;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #666;
+    padding: 0.5rem 1rem;
+    border-top: 2px solid #000;
+    border-bottom: 2px solid #000;
+}
+
+.top-bar a {
+    color: black;
+    text-decoration: none;
+}
+
+.article-content {
+    line-height: 1.8;     
+    text-align: justify;   
+    margin-top: 20px;
+    font-size: 1.1em;
+    white-space: pre-line; 
+    color: #2c3e50;
+}
+
+.news-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: block;
+    margin: 0 auto;
+}
+
+
+
+header {
+    border-bottom: 2px solidrgb(35, 39, 42);
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+header h1 {
+    font-size: 2.2em;
+    color: black;
+    font-weight: 700;
+    line-height: 1.2;
+}
+.meta-info {
+    font-size: 0.9em;
+    color: #7f8c8d;
+    margin-top: 8px;
+    font-style: italic;
+}
+.content {
+    background: #ffffff;
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    font-size: 1.1em;
+    color: #34495e;
+}
+.summary {
+    font-weight: 600;
+    font-size: 1.15em;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    border-left: 4px solid #3498db;
+    padding-left: 15px;
+    background-color: #ecf0f1;
+    line-height: 1.6;
+    text-align: justify;
+    white-space: pre-line;
+}
+
+p {
+    margin-bottom: 1.3em;
+}
+hr {
+    border: none;
+    border-top: 1px solid #dcdcdc;
+    margin: 30px 0;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    body {
+        padding: 0 10px 30px 10px;
+    }
+    header h1 {
+        font-size: 1.6em;
+    }
+    .content {
+        padding: 20px 15px;
+        font-size: 1em;
+    }
+}
+
+.news-image {
+    text-align: center;
+    margin: 25px 0;
+}
+
+.news-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #007bff;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* Các style khác bạn tùy chỉnh tiếp */
