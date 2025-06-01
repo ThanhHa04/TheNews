@@ -1,43 +1,21 @@
 <?php
-require_once('../src/dataConfig.php');
+require_once('../src/backupConfig.php');
 require_once __DIR__.'/../vendor/autoload.php';
 
 use Lazer\Classes\Database as Lazer;
 
 header('Content-Type: application/json');
 
-function replicateToNode2($action, $studentData) {
-    $replicationUrl = 'http://node3/server/replicate.php'; 
-    $payload = json_encode([
-        'action' => $action,
-        'student' => $studentData
-    ]);
-
-    $ch = curl_init($replicationUrl);
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => $payload,
-        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-        CURLOPT_TIMEOUT => 3
-    ]);
-
-    $response = curl_exec($ch);
-    curl_close($ch);
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $raw = file_get_contents("php://input");
     $data = json_decode($raw, true);
     $action = $data['action'] ?? null;
 
-    if ($action === 'remove') {
+    if (isset($data['action']) && $data['action'] === 'remove') {
         $id = (int) $data['id'];
         try {
             $record = Lazer::table('students')->find($id);
             $record->delete();
-            replicateToNode2('remove', ['id' => $id]);
-
             echo json_encode(['status' => 'success', 'message' => "Đã xóa học sinh ID $id"]);
         } catch (Exception $e) {
             echo json_encode(['status' => 'fail', 'message' => 'Không thể xóa: ' . $e->getMessage()]);
@@ -45,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    if ($action === 'add') {
+    if ($data['action'] === 'add') {
         if (!isset($data['student']) || !is_array($data['student'])) {
             echo json_encode(['status' => 'fail', 'message' => 'Dữ liệu học sinh không hợp lệ']);
             exit;
@@ -59,8 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $table->address = $student['address'] ?? '';
             $table->phone = $student['phone'] ?? '';
             $table->insert();
-            replicateToNode2('add', $student);
-
             echo json_encode(['status' => 'success', 'message' => 'Thêm học sinh thành công']);
         } catch (Exception $e) {
             echo json_encode(['status' => 'fail', 'message' => 'Không thể thêm học sinh: ' . $e->getMessage()]);
@@ -85,15 +61,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $record->setField('address', $student['address']);
             $record->setField('phone', $student['phone']);
             $record->save();
-            replicateToNode2('update', $student);
-
             echo json_encode(['status' => 'success', 'message' => 'Cập nhật học sinh thành công']);
         } catch (Exception $e) {
             echo json_encode(['status' => 'fail', 'message' => 'Không thể cập nhật học sinh: ' . $e->getMessage()]);
         }
         exit;
     }
+    
 }
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id'])) {
@@ -111,6 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     exit;
 }
 
+// ❌ Nếu không phải GET hoặc POST
 http_response_code(405);
 echo json_encode(['status' => 'fail', 'message' => 'Method Not Allowed']);
 exit;

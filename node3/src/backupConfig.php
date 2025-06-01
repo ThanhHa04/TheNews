@@ -1,5 +1,5 @@
 <?php
-define('LAZER_DATA_PATH', realpath(__DIR__) . '/../data/'); 
+define('LAZER_DATA_PATH', realpath(__DIR__) . '/../data_backup/');
 
 use Lazer\Classes\Database as Lazer;
 use Lazer\Classes\Helpers\Validate;

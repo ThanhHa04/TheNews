@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $result = json_decode($response, true);
     if ($result && isset($result['status']) && $result['status'] === 'success') {
-        header('Location: class.php?class=' . urlencode($class));
+        header('Location: index.php' . urlencode($class));
         exit;
     } else {
         echo "Không thể cập nhật học sinh. Phản hồi từ coordinator: " . $response;
