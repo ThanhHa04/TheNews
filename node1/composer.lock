@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "64ca0a2bad96bd8b95e8633e6cb9cfa3",
+    "content-hash": "b06b0cfe4e00ed014e75c92270ec1701",
     "packages": [
         {
             "name": "greg0/lazer-database",

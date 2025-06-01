@@ -7,7 +7,7 @@ services:
     ports:
       - "8001:80"
     volumes:
-      - ./node1/app:/var/www/html/app
+      - ./node1:/var/www/html
 
   node2:
     build: ./node2
@@ -17,7 +17,7 @@ services:
     ports:
       - "8002:80"
     volumes:
-      - ./node2/app:/var/www/html/app
+      - ./node2:/var/www/html
 
   node3:
     build: ./node3
@@ -27,7 +27,7 @@ services:
     ports:
       - "8003:80"
     volumes:
-      - ./node3/app:/var/www/html/app
+      - ./node3:/var/www/html
 
   coordinator:
     build: ./coordinator

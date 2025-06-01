@@ -1,4 +1,16 @@
 {
+    "name": "thanhha/node3",
+    "autoload": {
+        "psr-4": {
+            "Thanhha\\Node3\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ThanhHa04",
+            "email": "22010131@st.phenikaa-uni.edu.vn"
+        }
+    ],
     "require": {
         "greg0/lazer-database": "^2.0"
     }

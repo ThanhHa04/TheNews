@@ -4,9 +4,13 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit64ca0a2bad96bd8b95e8633e6cb9cfa3
+class ComposerStaticInit7d71c4606d87e6dee4955e914603797c
 {
     public static $prefixLengthsPsr4 = array (
+        'T' => 
+        array (
+            'Thanhha\\Node2\\' => 14,
+        ),
         'L' => 
         array (
             'Lazer\\Test\\' => 11,
@@ -15,6 +19,10 @@ class ComposerStaticInit64ca0a2bad96bd8b95e8633e6cb9cfa3
     );
 
     public static $prefixDirsPsr4 = array (
+        'Thanhha\\Node2\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
+        ),
         'Lazer\\Test\\' => 
         array (
             0 => __DIR__ . '/..' . '/greg0/lazer-database/tests/src',
@@ -32,9 +40,9 @@ class ComposerStaticInit64ca0a2bad96bd8b95e8633e6cb9cfa3
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit64ca0a2bad96bd8b95e8633e6cb9cfa3::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit64ca0a2bad96bd8b95e8633e6cb9cfa3::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit64ca0a2bad96bd8b95e8633e6cb9cfa3::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit7d71c4606d87e6dee4955e914603797c::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit7d71c4606d87e6dee4955e914603797c::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit7d71c4606d87e6dee4955e914603797c::$classMap;
 
         }, null, ClassLoader::class);
     }
